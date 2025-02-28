@@ -1,8 +1,12 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+  <!--  
+      Chargez un fichier Markdown en passant dans l’URL l’un des formats suivants :
+      #!url:https://url-du-fichier.md ou #!gist:username/gist-id
+  -->
   <meta charset="UTF-8">
-  <title>StackEdit.js Loader + CodeMirror (Dracula)</title>
+  <title>semdel</title>
 
   <!-- Beer CSS et Material Dynamic Colors -->
   <link href="https://cdn.jsdelivr.net/npm/beercss@3.9.6/dist/cdn/beer.min.css" rel="stylesheet" />
@@ -86,20 +90,16 @@
     }
   </style>
 </head>
-<body>
-<!--  <header>
-    <h1>StackEdit.js Loader</h1>
-    <p>
-      Chargez un fichier Markdown en passant dans l’URL l’un des formats suivants :<br>
-      <code>#!url:https://url-du-fichier.md</code> ou <code>#!gist:username/gist-id</code>
-    </p>
-  </header> -->
-
+<body class="light">
   <main>
     <!-- Zone d'édition CodeMirror -->
     <div id="editor"></div>
-    <div class="button-container">
-      <button id="editStackEdit">Ouvrir dans StackEdit</button>
+    <div class="button-container right-align">
+      <button id="editStackEdit">
+        <img src="https://stackedit.io/icons-c75a9472175cc17394ba6428d867fbcf/favicon-32x32.png">
+        <span>Ouvrir dans l'éditeur Markdown</span>
+      </button>
+      <button id="downloadButton">📥 Télécharger le fichier .md</button>
       <button id="copyTextButton">✂️ Copier</button>
     </div>
   </main>
@@ -215,6 +215,21 @@
             console.error("Erreur lors de la copie du texte :", error);
           });
       });
+
+      // Bouton « Télécharger .md »
+      document.getElementById("downloadButton").addEventListener("click", function() {
+        var content = editor.getValue();
+        var blob = new Blob([content], {type: "text/markdown"});
+        var url = URL.createObjectURL(blob);
+        var a = document.createElement("a");
+        a.href = url;
+        a.download = "document.md";
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        URL.revokeObjectURL(url);
+      });
+
     });
   </script>
 </body>
