@@ -1,0 +1,7 @@
+# Contexte
+
+# Action
+
+# Résultat
+
+# Exemple

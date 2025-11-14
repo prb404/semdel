@@ -93,14 +93,14 @@
 <body class="light">
   <main>
     <!-- Zone d'édition CodeMirror -->
-    <div class="button-container right-align">
-      <button id="editStackEdit">
-        <img src="https://stackedit.io/icons-c75a9472175cc17394ba6428d867fbcf/favicon-32x32.png">
-        <span>Ouvrir dans l'éditeur Markdown</span>
-      </button>
-      <button id="downloadButton">📥 Télécharger le fichier .md</button>
-      <button id="copyTextButton">✂️ Copier</button>
-    </div>
+    <nav class="no-space right-align">
+          <button id="editStackEdit" class="border left-round small tertiary">
+            <img src="https://stackedit.io/icons-c75a9472175cc17394ba6428d867fbcf/favicon-32x32.png">
+            <span>Ouvrir dans l'éditeur Markdown</span>
+          </button>
+          <button id="downloadButton" class="border no-round small secondary">📥 Télécharger le fichier .md</button>
+          <button id="copyTextButton" class="border right-round small primary">✂️ Copier</button>
+    </nav>
     <div id="editor"></div>
   </main>
 
