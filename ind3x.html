@@ -10,6 +10,15 @@
 <style>
 body { max-width:800px; margin:2rem auto; }
 main { min-width:0; }
+.toolbar { display:flex; align-items:flex-start; justify-content:flex-end; gap:8px; }
+.toolbar nav { min-width:0; margin:0; }
+#fullscreen { flex:0 0 32px; width:32px; min-width:32px; height:32px; margin:0; padding:6px; border:0; border-radius:4px; background:transparent; color:#746d80; box-shadow:none; display:inline-flex; align-items:center; justify-content:center; }
+#fullscreen:hover { background:rgba(103,80,155,.09); color:#67509b; }
+#fullscreen:focus-visible { outline:2px solid #67509b; outline-offset:2px; }
+#fullscreen svg { width:18px; height:18px; }
+main:fullscreen { box-sizing:border-box; width:100%; height:100%; padding:16px; background:var(--surface,#fcf8ff); color:var(--on-surface,#292735); display:flex; flex-direction:column; overflow:auto; }
+main:fullscreen #editor { flex:1; min-height:0; height:auto; resize:none; margin-bottom:0; }
+main:fullscreen .toolbar { flex-shrink:0; }
 nav.no-space { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0; }
 nav button { max-width:100%; white-space:normal; height:auto; min-height:32px; }
 button { padding:0.5rem 1rem; border:none; cursor:pointer; background:#333; color:#fff; border-radius:3px; }
@@ -33,6 +42,7 @@ button:disabled { opacity:.55; cursor:wait; }
 </head>
 <body class="light">
 <main>
+<div class="toolbar">
 <nav class="no-space right-align" aria-label="Actions du document">
 <button id="edit" class="border left-round small tertiary">
 <img src="https://stackedit.io/icons-c75a9472175cc17394ba6428d867fbcf/favicon-32x32.png" alt="">
@@ -41,6 +51,10 @@ button:disabled { opacity:.55; cursor:wait; }
 <button id="download" class="border no-round small secondary">📥 Télécharger le fichier .md</button>
 <button id="copy" class="border right-round small primary">✂️ Copier</button>
 </nav>
+<button id="fullscreen" type="button" title="Plein écran" aria-label="Plein écran" aria-pressed="false">
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path id="fullscreen-icon" d="M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5"/></svg>
+</button>
+</div>
 <button id="retry" class="small secondary" hidden>Réessayer le chargement</button>
 <p id="status" role="status" aria-live="polite"></p>
 <div id="editor"><textarea id="source" aria-label="Contenu Markdown" spellcheck="false"></textarea></div>
@@ -171,6 +185,25 @@ async function enhance() {
     cm.setSize('100%','100%'); refresh();
   } catch { /* Le textarea reste utilisable si le CDN est bloqué. */ }
 }
+const fullscreenButton = $('fullscreen');
+fullscreenButton.onclick = async () => {
+  try {
+    if(document.fullscreenElement) await document.exitFullscreen();
+    else if(document.querySelector('main').requestFullscreen) await document.querySelector('main').requestFullscreen();
+    else throw new Error('unsupported');
+  } catch {
+    status('Plein écran indisponible : le navigateur ou le forum doit autoriser cette fonction (allowfullscreen sur l’iframe).', true);
+  }
+};
+document.addEventListener('fullscreenchange', () => {
+  const active = Boolean(document.fullscreenElement);
+  const label = active ? 'Quitter le plein écran' : 'Plein écran';
+  fullscreenButton.title = label;
+  fullscreenButton.setAttribute('aria-label', label);
+  fullscreenButton.setAttribute('aria-pressed', String(active));
+  $('fullscreen-icon').setAttribute('d', active ? 'M3 8h5V3m8 0v5h5M8 21v-5H3m18 0h-5v5' : 'M8 3H3v5m13-5h5v5M3 16v5h5m13-5v5h-5');
+  refresh();
+});
 $('retry').onclick = load;
 window.addEventListener('hashchange', load);
 window.addEventListener('resize', refresh);
@@ -189,9 +222,9 @@ $('copy').onclick = async () => {
   catch {
     const temp = document.createElement('textarea'); temp.value = getText();
     temp.style.cssText = 'position:fixed;top:0;left:0;width:1px;height:1px;opacity:0'; document.body.append(temp); temp.select();
-    let copied = false;
-    try { copied = document.execCommand('copy'); } catch {} finally { temp.remove(); }
-    if(copied) copied();
+    let copySucceeded = false;
+    try { copySucceeded = document.execCommand('copy'); } catch {} finally { temp.remove(); }
+    if(copySucceeded) copied();
     else { if(cm) {cm.focus();cm.execCommand('selectAll');} else {source.focus();source.select();} status('Copie bloquée par le navigateur : texte sélectionné, utilisez Ctrl+C ou Cmd+C.', true); }
   }
 };
