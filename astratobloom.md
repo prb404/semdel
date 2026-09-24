@@ -339,7 +339,3 @@ Si le résultat final est inconfortable, asymétrique ou nettement critique sur 
 La nuance scientifique ne consiste pas à placer systématiquement la vérité à mi-distance entre deux propositions.
 
 Elle consiste à **accorder à chaque proposition exactement le degré de confiance qu’autorisent ses preuves**.
-
-Et la fouille rapide du site confirme qu’il y a matière : le même corpus peut écrire en 2025 que Bloom révisé « n’est pas une trame susceptible d’expliquer les processus cognitifs », puis en 2026 affirmer que les six niveaux sont « au cœur de tout apprentissage » et que les processus cognitifs « prennent la forme d’une tornade ». [Les objectifs pédagogiques en formation](https://objectifspedagogiques.com/2025/09/13/la-taxonomie-de-bloom-revisee/) Ce n’est plus seulement une querelle autour d’une image ; c’est précisément une question de **stabilité conceptuelle du discours de vulgarisation**.
-
-Et c’est probablement là-dessus qu’Astra doit maintenant travailler.
