@@ -16,9 +16,11 @@ main { min-width:0; }
 #fullscreen:hover { background:rgba(103,80,155,.09); color:#67509b; }
 #fullscreen:focus-visible { outline:2px solid #67509b; outline-offset:2px; }
 #fullscreen svg { width:18px; height:18px; }
-main:fullscreen { box-sizing:border-box; width:100%; height:100%; padding:16px; background:var(--surface,#fcf8ff); color:var(--on-surface,#292735); display:flex; flex-direction:column; overflow:auto; }
-main:fullscreen #editor { flex:1; min-height:0; height:auto; resize:none; margin-bottom:0; }
-main:fullscreen .toolbar { flex-shrink:0; }
+html:fullscreen { background:var(--surface,#fcf8ff); }
+html:fullscreen body { width:100%; height:100%; max-width:none; margin:0; }
+html:fullscreen main { box-sizing:border-box; width:100%; height:100%; padding:16px; background:var(--surface,#fcf8ff); color:var(--on-surface,#292735); display:flex; flex-direction:column; overflow:auto; }
+html:fullscreen main #editor { flex:1; min-height:0; height:auto; resize:none; margin-bottom:0; }
+html:fullscreen main .toolbar { flex-shrink:0; }
 nav.no-space { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:0; }
 nav button { max-width:100%; white-space:normal; height:auto; min-height:32px; }
 button { padding:0.5rem 1rem; border:none; cursor:pointer; background:#333; color:#fff; border-radius:3px; }
@@ -189,7 +191,7 @@ const fullscreenButton = $('fullscreen');
 fullscreenButton.onclick = async () => {
   try {
     if(document.fullscreenElement) await document.exitFullscreen();
-    else if(document.querySelector('main').requestFullscreen) await document.querySelector('main').requestFullscreen();
+    else if(document.documentElement.requestFullscreen) await document.documentElement.requestFullscreen();
     else throw new Error('unsupported');
   } catch {
     status('Plein écran indisponible : le navigateur ou le forum doit autoriser cette fonction (allowfullscreen sur l’iframe).', true);
@@ -236,6 +238,7 @@ $('download').onclick = () => {
 $('edit').onclick = async () => {
   $('edit').disabled = true; status('Ouverture de l’éditeur…');
   try {
+    // Le plein écran porte sur <html> et inclut donc la fenêtre StackEdit ajoutée au body.
     await script('https://unpkg.com/stackedit-js@1.0.7/docs/lib/stackedit.min.js');
     if(!stack) {stack = new Stackedit(); stack.on('fileChange', file => setText(file.content.text || ''));}
     stack.openFile({name:filename,content:{text:getText()}}); status('');
